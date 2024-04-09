@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to fetch movie list from the server and populate the menu
     function fetchAndPopulateMovieList() {
-        fetch('http://localhost:3000/films')
+        fetch('https://code-challenge-3-7spb.onrender.com/films')
             .then(response => response.json())
             .then(films => {
                 films.forEach(film => {
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function fetchAndDisplayMovieDetails(film) {
-        fetch(`http://localhost:3000/films/${film.id}`)
+        fetch(`https://code-challenge-3-7spb.onrender.com/films/${film.id}`)
             .then(response => response.json())
             .then(movie => {
                 movieTitle.textContent = movie.title;
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         buyTicketButton.onclick = () => {
             movie.tickets_sold++;
 
-            fetch(`http://localhost:3000/films/${movie.id}`, {
+            fetch(`https://code-challenge-3-7spb.onrender.com/films/films/${movie.id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error buying ticket:', error);
             });
 
-            fetch("http://localhost:3000/tickets", {
+            fetch("https://code-challenge-3-7spb.onrender.com/films/tickets", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const deleteBtn = document.getElementById(film.id);
 
         deleteBtn.addEventListener("click", () => {
-            fetch(`http://localhost:3000/films/${film.id}`, {
+            fetch(`https://code-challenge-3-7spb.onrender.com/films/${film.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
