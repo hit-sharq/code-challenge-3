@@ -18,18 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const filmItem = document.createElement('li');
                     filmItem.classList.add('film', 'item');
                     filmItem.innerHTML = `
-                        ${film.title}
-                        <button id=${film.id}>Delete</button> 
-                    `;
+            ${film.title}
+            <button id="${film.id}">Delete</button>
+            
+            `
                     filmsList.appendChild(filmItem);
-                    deleteMovie(film);
+                    deleteMovie(film)
 
-                    // Check if movie is sold out and update UI
                     if ((film.capacity - film.tickets_sold) === 0) {
-                        filmItem.classList.add("sold-out");
+                        filmItem.classList.add("sold-out"); 
                     }
-
-                    // Add click event listener to each film item
                     filmItem.addEventListener('click', () => {
                         fetchAndDisplayMovieDetails(film);
                     });
@@ -41,8 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // Function to display first movie data on page load or update
-    function firstMovieData(movie) {
+    function firstMovieData(movie){
         movieTitle.textContent = movie.title;
         movieRuntime.textContent = movie.runtime + ' minutes';
         movieDescription.textContent = movie.description;
@@ -52,12 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
         buyTicket(movie);
     }
 
-    // Function to fetch and display movie details based on film ID
     function fetchAndDisplayMovieDetails(film) {
         fetch(`http://localhost:3000/films/${film.id}`)
             .then(response => response.json())
             .then(movie => {
-                // Update movie details in the DOM
                 movieTitle.textContent = movie.title;
                 movieRuntime.textContent = movie.runtime + ' minutes';
                 movieDescription.textContent = movie.description;
@@ -65,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 availableTickets.textContent = movie.capacity - movie.tickets_sold;
                 moviePoster.src = movie.poster;
 
-                // Update Buy Ticket button text and disabled state based on availability
                 if (movie.capacity - movie.tickets_sold === 0) {
                     buyTicketButton.textContent = 'Sold Out';
                     buyTicketButton.disabled = true;
@@ -75,18 +69,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             })
             .catch(error => {
-                console.error('Error fetching movie details:', error);
+                console.error('Error fetching movie details:', error);cc
             });
-
-        buyTicket(film);
+            buyTicket(film);
     }
 
-    // Function to handle buying tickets
     function buyTicket(movie) {
         buyTicketButton.onclick = () => {
             movie.tickets_sold++;
 
-            // Update tickets sold count in the database
             fetch(`http://localhost:3000/films/${movie.id}`, {
                 method: 'PATCH',
                 headers: {
@@ -96,19 +87,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     tickets_sold: movie.tickets_sold
                 })
             })
-                .then(response => response.json())
-                .then(updatedMovie => {
-                    availableTickets.textContent = updatedMovie.capacity - updatedMovie.tickets_sold;
-                    if (parseInt(availableTickets.textContent) === 0) {
-                        buyTicketButton.textContent = 'Sold Out';
-                        buyTicketButton.disabled = true;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error buying ticket:', error);
-                });
+            .then(response => response.json())
+            .then(updatedMovie => {
+                availableTickets.textContent = updatedMovie.capacity - updatedMovie.tickets_sold;
+                if (parseInt(availableTickets.textContent) === 0) {
+                    buyTicketButton.textContent = 'Sold Out';
+                    buyTicketButton.disabled = true;
+                }
+            })
+            .catch(error => {
+                console.error('Error buying ticket:', error);
+            });
 
-            // Add ticket purchase record to the database
             fetch("http://localhost:3000/tickets", {
                 method: "POST",
                 headers: {
@@ -119,17 +109,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     tickets: 1,
                 }),
             })
-                .then((res) => res.json())
-                .catch(error => {
-                    console.error('Error fetching movie list:', error);
-                });
-
+            .then((res) => res.json())
+            .catch(error => {
+                console.error('Error buying ticket:', error);
+            });
         };
 
     }
 
-    // Function to handle movie deletion
-    function deleteMovie(film) {
+    function deleteMovie(film){
         const deleteBtn = document.getElementById(film.id);
 
         deleteBtn.addEventListener("click", () => {
@@ -139,13 +127,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     "Content-Type": "application/json",
                 },
             })
-                .catch(error => {
-                    console.error('Error fetching movie list:', error);
-                });
+            .catch(error => {
+                console.error('Error deleting movie:', error);
+            });
         });
-
     }
 
-    // Call the function to fetch and populate movie list when the page loads
     fetchAndPopulateMovieList();
 });
